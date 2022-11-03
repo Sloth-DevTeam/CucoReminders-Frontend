@@ -1,19 +1,24 @@
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_bloc.dart';
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_event.dart';
+import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
 import 'package:flutter/material.dart';
 
-class EditReminderWidget extends StatefulWidget {
-  const EditReminderWidget({Key? key}) : super(key: key);
-
-  @override
-  State<EditReminderWidget> createState() => _EditReminderWidgetState();
-}
-
-class _EditReminderWidgetState extends State<EditReminderWidget> {
+class EditReminderWidget extends StatelessWidget {
+  const EditReminderWidget({
+    Key? key,
+    required this.reminder,
+    required this.controleDescricao,
+    required this.controleTitulo,
+    required this.bloc,
+  }) : super(key: key);
+  final ReminderBloc bloc;
+  final Reminder reminder;
+  final TextEditingController controleTitulo;
+  final TextEditingController controleDescricao;
   @override
   Widget build(BuildContext context) {
-    void _submitForm() {
-      setState(() {});
-    }
-
+    Reminder novo =
+        Reminder(titulo: '', legenda: '', dataVencimento: DateTime.now());
     return Container(
       padding: const EdgeInsets.all(30),
       height: 800,
@@ -39,7 +44,7 @@ class _EditReminderWidgetState extends State<EditReminderWidget> {
             child: Text(
               'Editar Reminder',
               style: TextStyle(
-                color: Color(0xff194429),
+                color: Color(0xffF8BC28),
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -51,11 +56,12 @@ class _EditReminderWidgetState extends State<EditReminderWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextFormField(
+                  controller: controleTitulo,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.notifications),
                     isDense: true,
                     contentPadding: const EdgeInsets.all(22),
-                    hintText: 'Titulo',
+                    hintText: reminder.titulo,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -91,11 +97,12 @@ class _EditReminderWidgetState extends State<EditReminderWidget> {
                   ),
                 ),
                 TextFormField(
+                  controller: controleDescricao,
                   maxLines: 3,
                   decoration: InputDecoration(
                     isDense: true,
                     contentPadding: const EdgeInsets.all(22),
-                    hintText: 'Descrição',
+                    hintText: reminder.legenda,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -117,7 +124,19 @@ class _EditReminderWidgetState extends State<EditReminderWidget> {
             height: 20,
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              novo = Reminder(
+                titulo: controleTitulo.text,
+                legenda: controleDescricao.text,
+                dataVencimento: DateTime.now(),
+              );
+              bloc.inputDepesa.add(
+                EditReminderEvent(
+                  reminder: reminder,
+                  newReminder: novo,
+                ),
+              );
+            },
             child: Container(
               decoration: BoxDecoration(
                 boxShadow: [

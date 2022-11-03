@@ -1,5 +1,8 @@
 import 'package:cuco_reminders/screens/init_screen/splash_screen.dart';
+import 'package:cuco_reminders/screens/login_screen/auth/auth_login.dart';
+import 'package:cuco_reminders/screens/register_screen/auth/auth_register.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
@@ -12,9 +15,16 @@ class CucoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => AuthRegister()),
+          ChangeNotifierProvider(create: (context) => AuthLogin())
+        ],
+        builder: (context, snapshot) {
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SplashScreen(),
+          );
+        });
   }
 }

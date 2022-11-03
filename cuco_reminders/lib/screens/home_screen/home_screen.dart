@@ -1,19 +1,48 @@
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_bloc.dart';
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_event.dart';
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_state.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/add_reminder_widget.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/reminder_widget.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final ReminderBloc reminderBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    reminderBloc = ReminderBloc();
+    reminderBloc.inputDepesa.add(ReadReminderEvent());
+  }
+
+  @override
+  void dispose() {
+    reminderBloc.inputDepesa.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controleTitulo = TextEditingController();
+    final controleDescricao = TextEditingController();
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (context) => const AddReminderWidget(),
+            builder: (context) => AddReminderWidget(
+              controleDescricao: controleTitulo,
+              controleTitulo: controleDescricao,
+              bloc: reminderBloc,
+            ),
             barrierColor: Colors.black.withOpacity(0.5),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -87,10 +116,20 @@ class HomeScreen extends StatelessWidget {
           height: 50,
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: ((context, index) => const ReminderWidget()),
-        itemCount: 3,
-      ),
+      body: StreamBuilder<ReminderState>(
+          stream: reminderBloc.stream,
+          builder: (context, snapshot) {
+            final remindersList = snapshot.data?.reminder ?? [];
+            return ListView.builder(
+              itemBuilder: ((context, index) => ReminderWidget(
+                    controleDescricao: controleDescricao,
+                    controleTitulo: controleTitulo,
+                    bloc: reminderBloc,
+                    reminder: remindersList[index],
+                  )),
+              itemCount: remindersList.length,
+            );
+          }),
     );
   }
 }

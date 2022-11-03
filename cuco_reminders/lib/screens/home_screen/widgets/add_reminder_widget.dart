@@ -1,19 +1,22 @@
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_bloc.dart';
+import 'package:cuco_reminders/screens/home_screen/bloc/reminder_event.dart';
+import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
 import 'package:flutter/material.dart';
 
-class AddReminderWidget extends StatefulWidget {
-  const AddReminderWidget({Key? key}) : super(key: key);
-
-  @override
-  State<AddReminderWidget> createState() => _AddReminderWidgetState();
-}
-
-class _AddReminderWidgetState extends State<AddReminderWidget> {
+class AddReminderWidget extends StatelessWidget {
+  const AddReminderWidget({
+    Key? key,
+    required this.bloc,
+    required this.controleDescricao,
+    required this.controleTitulo,
+  }) : super(key: key);
+  final ReminderBloc bloc;
+  final TextEditingController controleTitulo;
+  final TextEditingController controleDescricao;
   @override
   Widget build(BuildContext context) {
-    void _submitForm() {
-      setState(() {});
-    }
-
+    Reminder novo =
+        Reminder(titulo: '', legenda: '', dataVencimento: DateTime.now());
     return Container(
       padding: const EdgeInsets.all(30),
       height: 800,
@@ -51,6 +54,7 @@ class _AddReminderWidgetState extends State<AddReminderWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextFormField(
+                  controller: controleTitulo,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.notifications),
                     isDense: true,
@@ -91,6 +95,7 @@ class _AddReminderWidgetState extends State<AddReminderWidget> {
                   ),
                 ),
                 TextFormField(
+                  controller: controleDescricao,
                   maxLines: 3,
                   decoration: InputDecoration(
                     isDense: true,
@@ -117,7 +122,16 @@ class _AddReminderWidgetState extends State<AddReminderWidget> {
             height: 20,
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              novo = Reminder(
+                titulo: controleTitulo.text,
+                legenda: controleDescricao.text,
+                dataVencimento: DateTime.now(),
+              );
+              bloc.inputDepesa.add(
+                AddReminderEvent(reminder: novo),
+              );
+            },
             child: Container(
               decoration: BoxDecoration(
                 boxShadow: [

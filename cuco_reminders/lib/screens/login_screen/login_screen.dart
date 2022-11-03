@@ -1,6 +1,8 @@
 import 'package:cuco_reminders/screens/home_screen/home_screen.dart';
+import 'package:cuco_reminders/screens/login_screen/auth/auth_login.dart';
 import 'package:cuco_reminders/screens/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -10,6 +12,45 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, String> _authData = {
+    'fullName': '',
+    'password': '',
+  };
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Ocorreo um Erro'),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Fechar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submit() async {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    _formKey.currentState?.save();
+    AuthLogin auth = Provider.of(context, listen: false);
+
+    await auth.login(
+      _authData['fullName']!,
+      _authData['password']!,
+    );
+    debugPrint(auth.toString());
+  }
+
   bool _isHidden = true;
 
   @override
@@ -145,11 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     MaterialButton(
                       onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      ),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          )),
                       child: Container(
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -192,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const Expanded(
                 child: SizedBox(),
-              )
+              ),
             ],
           ),
         ),
