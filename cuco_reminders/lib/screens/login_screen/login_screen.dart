@@ -1,4 +1,5 @@
-import 'package:cuco_reminders/screens/home_screen/home_screen.dart';
+import 'dart:convert';
+
 import 'package:cuco_reminders/screens/login_screen/auth/auth_login.dart';
 import 'package:cuco_reminders/screens/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _authData = {
-    'fullName': '',
+    'username': '',
     'password': '',
   };
 
@@ -37,18 +38,19 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
 
-    if (!isValid) {
-      return;
-    }
+    // if (!isValid) {
+    //   return;
+    // }
 
     _formKey.currentState?.save();
     AuthLogin auth = Provider.of(context, listen: false);
 
-    await auth.login(
-      _authData['fullName']!,
+    final response = await auth.login(
+      _authData['username']!,
       _authData['password']!,
     );
-    debugPrint(auth.toString());
+    Map<String, dynamic> data = json.decode(response.body);
+    print(data);
   }
 
   bool _isHidden = true;
@@ -100,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           TextFormField(
+                            onChanged: (value) => _authData['username'] = value,
                             decoration: InputDecoration(
                               isDense: true,
                               contentPadding: const EdgeInsets.all(22),
@@ -124,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 20,
                           ),
                           TextFormField(
+                            onChanged: (value) => _authData['password'] = value,
                             obscureText: _isHidden,
                             decoration: InputDecoration(
                               suffix: InkWell(
@@ -185,11 +189,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     MaterialButton(
-                      onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          )),
+                      onPressed: _submit,
+                      // onPressed: () => Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => const HomeScreen(),
+                      //     )),
                       child: Container(
                         decoration: BoxDecoration(
                           boxShadow: [
