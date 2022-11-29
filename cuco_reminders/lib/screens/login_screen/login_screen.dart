@@ -16,14 +16,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
 
-  final _senhaController = TextEditingController();
-
-  final Map<String, String> _authData = {
-    'username': '',
-    'password': '',
-  };
+  final _passwordController = TextEditingController();
 
   bool _isHidden = true;
 
@@ -82,8 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return null;
                               },
-                              onChanged: (value) =>
-                                  _authData['username'] = value,
+                              controller: _usernameController,
                               decoration: InputDecoration(
                                 isDense: true,
                                 contentPadding: const EdgeInsets.all(22),
@@ -114,8 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return null;
                               },
-                              onChanged: (value) =>
-                                  _authData['password'] = value,
+                              controller: _passwordController,
                               obscureText: _isHidden,
                               decoration: InputDecoration(
                                 suffix: InkWell(
@@ -244,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print('Logando');
     var url = Uri.parse(
-      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/oauth/token',
+      'https://61d1-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/oauth/token',
     );
     var response = await http.post(
       url,
@@ -253,8 +246,8 @@ class _LoginScreenState extends State<LoginScreen> {
         "content-type": "application/x-www-form-urlencoded"
       },
       body: {
-        'username': _emailController.text,
-        'password': _senhaController.text,
+        'username': _usernameController.text,
+        'password': _passwordController.text,
         'grant_type': 'password'
       },
     );
