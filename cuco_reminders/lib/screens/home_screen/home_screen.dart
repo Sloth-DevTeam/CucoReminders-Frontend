@@ -13,6 +13,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List> reminders;
+  final _formKey = GlobalKey<FormState>();
+
+  final _adicionarTitulo = TextEditingController();
+  final _adicionarDescricao = TextEditingController();
+
+  final _editarTitulo = TextEditingController();
+  final _editarDescricao = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
           showModalBottomSheet(
             context: context,
             builder: (context) => Form(
+              key: _formKey,
               child: Container(
                 color: Colors.yellow,
                 child: Column(
