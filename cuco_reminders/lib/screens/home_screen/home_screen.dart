@@ -1,9 +1,8 @@
-import 'package:cuco_reminders/screens/home_screen/bloc/reminder_bloc.dart';
-import 'package:cuco_reminders/screens/home_screen/bloc/reminder_event.dart';
-import 'package:cuco_reminders/screens/home_screen/bloc/reminder_state.dart';
-import 'package:cuco_reminders/screens/home_screen/widgets/add_reminder_widget.dart';
-import 'package:cuco_reminders/screens/home_screen/widgets/reminder_widget.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,123 +12,102 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final ReminderBloc reminderBloc;
+  late Future<List> reminders;
 
   @override
   void initState() {
     super.initState();
-    reminderBloc = ReminderBloc();
-    reminderBloc.inputDepesa.add(ReadReminderEvent());
-  }
-
-  @override
-  void dispose() {
-    reminderBloc.inputDepesa.close();
-    super.dispose();
+    reminders = fetchReminders();
   }
 
   @override
   Widget build(BuildContext context) {
-    final controleTitulo = TextEditingController();
-    final controleDescricao = TextEditingController();
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => AddReminderWidget(
-              controleDescricao: controleTitulo,
-              controleTitulo: controleDescricao,
-              bloc: reminderBloc,
-            ),
-            barrierColor: Colors.black.withOpacity(0.5),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
-              ),
-            ),
-          );
-        },
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                Color(0xffE38929),
-                Color(0xffFFAB00),
-              ],
-            ),
-          ),
-          child: const Icon(
-            Icons.add,
-            size: 30,
-          ),
+        appBar: AppBar(
+          title: const Text('Reminders List'),
         ),
-      ),
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: <Color>[
-                  Color(0xff194429),
-                  Color(0xff188534),
-                ]),
-          ),
-        ),
-        toolbarHeight: 80,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Reminders',
-          style: TextStyle(
-            color: Color(0xffF3A42C),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        clipBehavior: Clip.antiAlias,
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.topRight,
-              colors: <Color>[
-                Color(0xff194429),
-                Color(0xff188534),
-              ],
-            ),
-          ),
-          height: 50,
-        ),
-      ),
-      body: StreamBuilder<ReminderState>(
-          stream: reminderBloc.stream,
-          builder: (context, snapshot) {
-            final remindersList = snapshot.data?.reminder ?? [];
-            return ListView.builder(
-              itemBuilder: ((context, index) => ReminderWidget(
-                    controleDescricao: controleDescricao,
-                    controleTitulo: controleTitulo,
-                    bloc: reminderBloc,
-                    reminder: remindersList[index],
-                  )),
-              itemCount: remindersList.length,
+        body: FutureBuilder<List>(
+          future: fetchReminders(),
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data![index]['titulo']),
+                    subtitle: Text(
+                      snapshot.data![index]['mensagem'],
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        deleteReminders(
+                          snapshot.data![index]['id'].toString(),
+                        );
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {}
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }),
-    );
+        ));
   }
+}
+
+Future<List> fetchReminders() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  var url = Uri.parse(
+      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes');
+  var response = await http.get(
+    url,
+    headers: {
+      'Authorization': sharedPreferences.getString('Authorization')!,
+    },
+  );
+  if (response.statusCode == 200) {
+    return json.decode(response.body).map((reminder) => reminder).toList();
+  } else {
+    throw Exception('Error get reminders');
+  }
+}
+
+deleteReminders(String id) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  var url = Uri.parse(
+      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+  var response = await http.delete(
+    url,
+    headers: {
+      'Authorization': sharedPreferences.getString('Authorization')!,
+    },
+  );
+  print(
+    response.body.toString(),
+  );
+  print(response.statusCode);
+}
+
+adicionarReminders() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  var url = Uri.parse(
+      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes/salvar');
+  var response = await http.delete(url, headers: {
+    'Authorization': sharedPreferences.getString('Authorization')!,
+  }, body: {
+    'titulo': '(String) titulo',
+    'mensagem': '(String) msg',
+    'dataVencimento':
+        ' (String) dataVencimento [dia+"/"+mes+"/"+ano+" "+hora+":"+minuto+":"+segundo;]',
+  });
+  print(
+    response.body.toString(),
+  );
+  print(response.statusCode);
 }
