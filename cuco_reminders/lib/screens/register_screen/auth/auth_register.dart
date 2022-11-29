@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class AuthRegister with ChangeNotifier {
   static const _url =
-      'https://cucoreminders.herokuapp.com/cucoreminder/users/salvar';
+      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/users/salvar';
   Future<void> signup(String? fullName, String? password) async {
     final response = await http.post(
       Uri.parse(_url),

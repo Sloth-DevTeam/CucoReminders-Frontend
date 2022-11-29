@@ -1,5 +1,5 @@
 import 'package:cuco_reminders/screens/init_screen/splash_screen.dart';
-import 'package:cuco_reminders/screens/login_screen/auth/auth_login.dart';
+
 import 'package:cuco_reminders/screens/register_screen/auth/auth_register.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,6 @@ class CucoApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => AuthRegister()),
-          ChangeNotifierProvider(create: (context) => AuthLogin())
         ],
         builder: (context, snapshot) {
           return const MaterialApp(

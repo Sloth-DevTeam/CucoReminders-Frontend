@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:cuco_reminders/screens/login_screen/auth/auth_login.dart';
 import 'package:cuco_reminders/screens/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,40 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
     'username': '',
     'password': '',
   };
-
-  void _showErrorDialog(String msg) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Ocorreo um Erro'),
-        content: Text(msg),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Fechar'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _submit() async {
-    final isValid = _formKey.currentState?.validate() ?? false;
-
-    // if (!isValid) {
-    //   return;
-    // }
-
-    _formKey.currentState?.save();
-    AuthLogin auth = Provider.of(context, listen: false);
-
-    final response = await auth.login(
-      _authData['username']!,
-      _authData['password']!,
-    );
-    Map<String, dynamic> data = json.decode(response.body);
-    print(data);
-  }
 
   bool _isHidden = true;
 
@@ -189,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     MaterialButton(
-                      onPressed: _submit,
+                      onPressed: () {},
                       // onPressed: () => Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
