@@ -23,38 +23,103 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Reminders List'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => Form(
+              child: Container(
+                color: Colors.yellow,
+                child: Column(
+                  children: [
+                    TextFormField(),
+                    TextFormField(),
+                    TextFormField(),
+                    MaterialButton(
+                      onPressed: () {},
+                      child: const Text('Adicionar'),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            barrierColor: Colors.black.withOpacity(0.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+            ),
+          );
+        },
+        child: const Icon(
+          Icons.add,
         ),
-        body: FutureBuilder<List>(
-          future: fetchReminders(),
-          builder: ((context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(snapshot.data![index]['titulo']),
-                    subtitle: Text(
-                      snapshot.data![index]['mensagem'],
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        deleteReminders(
-                          snapshot.data![index]['id'].toString(),
-                        );
-                      },
-                      icon: const Icon(Icons.delete),
-                    ),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {}
-            return const Center(
-              child: CircularProgressIndicator(),
+      ),
+      appBar: AppBar(
+        title: const Text('Reminders List'),
+      ),
+      body: FutureBuilder<List>(
+        future: fetchReminders(),
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Form(
+                          child: Container(
+                            color: Colors.yellow,
+                            child: Column(
+                              children: [
+                                TextFormField(),
+                                TextFormField(),
+                                TextFormField(),
+                                MaterialButton(
+                                  onPressed: () {},
+                                  child: const Text('Salvar'),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        barrierColor: Colors.black.withOpacity(0.5),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            topRight: Radius.circular(40),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                  title: Text(snapshot.data![index]['titulo']),
+                  subtitle: Text(
+                    snapshot.data![index]['mensagem'],
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      deleteReminders(
+                        snapshot.data![index]['id'].toString(),
+                      );
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
+                );
+              },
             );
-          }),
-        ));
+          } else if (snapshot.hasError) {}
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }),
+      ),
+    );
   }
 }
 
@@ -62,7 +127,7 @@ Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes');
+      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -80,7 +145,7 @@ deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
@@ -97,7 +162,7 @@ adicionarReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d065-2804-7f7-a58a-4d7d-80c4-19b8-d121-cc08.sa.ngrok.io/cucoreminder/lembretes/salvar');
+      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
   var response = await http.delete(url, headers: {
     'Authorization': sharedPreferences.getString('Authorization')!,
   }, body: {
