@@ -7,7 +7,7 @@ class ModalAddWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(30),
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.8,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -66,15 +66,25 @@ class ModalAddWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                DropdownButton(
-                  items: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((int value) {
-                    return DropdownMenuItem<String>(
-                      value: value.toString(),
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                  onChanged: (_) {},
+                // Prioridade
+                Container(
+                  width: 400,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(60),
+                  ),
+                  child: DropdownButton(
+                    items: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((int value) {
+                      return DropdownMenuItem<String>(
+                        value: value.toString(),
+                        child: Text(value.toString()),
+                      );
+                    }).toList(),
+                    onChanged: (_) {},
+                  ),
                 ),
+                // Data de entrega
                 TextFormField(
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.calendar_month),
@@ -92,26 +102,6 @@ class ModalAddWidget extends StatelessWidget {
                       borderSide: const BorderSide(
                           width: 3, color: Colors.white), //<-- SEE HERE
                       borderRadius: BorderRadius.circular(50.0),
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(22),
-                    hintText: 'Descrição',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                 ),

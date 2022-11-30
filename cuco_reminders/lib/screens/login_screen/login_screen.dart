@@ -237,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print('Logando');
     var url = Uri.parse(
-      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/oauth/token',
+      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/oauth/token',
     );
     var response = await http.post(
       url,

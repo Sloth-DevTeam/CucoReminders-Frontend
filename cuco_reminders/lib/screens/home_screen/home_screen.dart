@@ -124,7 +124,7 @@ Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
+      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -142,7 +142,7 @@ deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
@@ -159,7 +159,7 @@ adicionarReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
+      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
   var response = await http.delete(url, headers: {
     'Authorization': sharedPreferences.getString('Authorization')!,
   }, body: {
