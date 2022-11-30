@@ -75,6 +75,10 @@ class ModalAddWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(60),
                   ),
                   child: DropdownButton(
+                    hint: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(' Selecione Prioridade'),
+                    ),
                     items: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((int value) {
                       return DropdownMenuItem<String>(
                         value: value.toString(),
@@ -85,23 +89,85 @@ class ModalAddWidget extends StatelessWidget {
                   ),
                 ),
                 // Data de entrega
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 150,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(60),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.black54,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                'dd/mm/yy',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 60,
+                      width: 150,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(60),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.black54,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                'hh:mm',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 TextFormField(
+                  // controller: controleDescricao,
+                  maxLines: 3,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.calendar_month),
                     isDense: true,
                     contentPadding: const EdgeInsets.all(22),
-                    hintText: 'Data de Inicio',
+                    hintText: 'Descrição',
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: const BorderSide(
                           width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(50.0),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
                           width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(50.0),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                 ),

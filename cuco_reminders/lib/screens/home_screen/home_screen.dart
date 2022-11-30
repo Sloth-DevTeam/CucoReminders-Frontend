@@ -130,52 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       dataVencimento: snapshot.data![index]['dataVencimento'],
                       prioridade: snapshot.data![index]['prioridade']),
                 );
-
-                // return ListTile(
-                //   leading: IconButton(
-                //     onPressed: () {
-                //       showModalBottomSheet(
-                //         context: context,
-                //         builder: (context) => Form(
-                //           child: Container(
-                //             color: Colors.yellow,
-                //             child: Column(
-                //               children: [
-                //                 TextFormField(),
-                //                 TextFormField(),
-                //                 TextFormField(),
-                //                 MaterialButton(
-                //                   onPressed: () {},
-                //                   child: const Text('Salvar'),
-                //                 )
-                //               ],
-                //             ),
-                //           ),
-                //         ),
-                //         barrierColor: Colors.black.withOpacity(0.5),
-                //         shape: const RoundedRectangleBorder(
-                //           borderRadius: BorderRadius.only(
-                //             topLeft: Radius.circular(40),
-                //             topRight: Radius.circular(40),
-                //           ),
-                //         ),
-                //       );
-                //     },
-                //     icon: const Icon(Icons.edit),
-                //   ),
-                //   title: Text(snapshot.data![index]['titulo']),
-                //   subtitle: Text(
-                //     snapshot.data![index]['mensagem'],
-                //   ),
-                //   trailing: IconButton(
-                //     onPressed: () {
-                //       deleteReminders(
-                //         snapshot.data![index]['id'].toString(),
-                //       );
-                //     },
-                //     icon: const Icon(Icons.delete),
-                //   ),
-                // );
               },
             );
           } else if (snapshot.hasError) {}
@@ -192,7 +146,7 @@ Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
+      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -210,7 +164,7 @@ deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
@@ -227,7 +181,7 @@ adicionarReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://46f4-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
+      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
   var response = await http.delete(url, headers: {
     'Authorization': sharedPreferences.getString('Authorization')!,
   }, body: {

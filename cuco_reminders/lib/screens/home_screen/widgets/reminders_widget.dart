@@ -83,7 +83,23 @@ class RemindersWidget extends StatelessWidget {
                 Text(
                   reminder.legenda,
                   style: const TextStyle(fontSize: 14, color: Colors.white),
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: const [
+                    Text(
+                      'Faltam 5 dias',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
