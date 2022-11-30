@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
   static const _url =
-      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/';
+      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/';
   Future<void> signup(String fullName, String password) async {
     final response = await http.post(
       Uri.parse(_url),

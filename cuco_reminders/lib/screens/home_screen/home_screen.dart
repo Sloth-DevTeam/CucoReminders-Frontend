@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cuco_reminders/screens/home_screen/widgets/modal_add_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -33,23 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
             builder: (context) => Form(
               key: _formKey,
-              child: Container(
-                color: Colors.yellow,
-                child: Column(
-                  children: [
-                    TextFormField(),
-                    TextFormField(),
-                    TextFormField(),
-                    MaterialButton(
-                      onPressed: () {},
-                      child: const Text('Adicionar'),
-                    )
-                  ],
-                ),
-              ),
+              child: const ModalAddWidget(),
             ),
             barrierColor: Colors.black.withOpacity(0.5),
             shape: const RoundedRectangleBorder(
@@ -135,7 +124,7 @@ Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
+      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -153,7 +142,7 @@ deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
@@ -170,7 +159,7 @@ adicionarReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://c8c0-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
+      'https://d893-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
   var response = await http.delete(url, headers: {
     'Authorization': sharedPreferences.getString('Authorization')!,
   }, body: {
