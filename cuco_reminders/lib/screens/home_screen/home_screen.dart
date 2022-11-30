@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/modal_add_widget.dart';
+import 'package:cuco_reminders/screens/home_screen/widgets/reminders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +33,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                Color(0xffE38929),
+                Color(0xffFFAB00),
+              ],
+            ),
+          ),
+          child: const Icon(
+            Icons.add,
+            size: 30,
+          ),
+        ),
         onPressed: () {
           showModalBottomSheet(
             isScrollControlled: true,
@@ -49,12 +69,52 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
-        child: const Icon(
-          Icons.add,
-        ),
       ),
       appBar: AppBar(
-        title: const Text('Reminders List'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: <Color>[
+                  Color(0xff194429),
+                  Color(0xff188534),
+                ]),
+          ),
+        ),
+        toolbarHeight: 80,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'Reminders',
+          style: TextStyle(
+            color: Color(0xffF3A42C),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.more_vert),
+          )
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        clipBehavior: Clip.antiAlias,
+        shape: const CircularNotchedRectangle(),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.topRight,
+              colors: <Color>[
+                Color(0xff194429),
+                Color(0xff188534),
+              ],
+            ),
+          ),
+          height: 50,
+        ),
       ),
       body: FutureBuilder<List>(
         future: fetchReminders(),
@@ -63,51 +123,59 @@ class _HomeScreenState extends State<HomeScreen> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  leading: IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) => Form(
-                          child: Container(
-                            color: Colors.yellow,
-                            child: Column(
-                              children: [
-                                TextFormField(),
-                                TextFormField(),
-                                TextFormField(),
-                                MaterialButton(
-                                  onPressed: () {},
-                                  child: const Text('Salvar'),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                  title: Text(snapshot.data![index]['titulo']),
-                  subtitle: Text(
-                    snapshot.data![index]['mensagem'],
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      deleteReminders(
-                        snapshot.data![index]['id'].toString(),
-                      );
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
+                return RemindersWidget(
+                  reminder: Reminder(
+                      titulo: snapshot.data![index]['titulo'],
+                      legenda: snapshot.data![index]['mensagem'],
+                      dataVencimento: snapshot.data![index]['dataVencimento'],
+                      prioridade: snapshot.data![index]['prioridade']),
                 );
+
+                // return ListTile(
+                //   leading: IconButton(
+                //     onPressed: () {
+                //       showModalBottomSheet(
+                //         context: context,
+                //         builder: (context) => Form(
+                //           child: Container(
+                //             color: Colors.yellow,
+                //             child: Column(
+                //               children: [
+                //                 TextFormField(),
+                //                 TextFormField(),
+                //                 TextFormField(),
+                //                 MaterialButton(
+                //                   onPressed: () {},
+                //                   child: const Text('Salvar'),
+                //                 )
+                //               ],
+                //             ),
+                //           ),
+                //         ),
+                //         barrierColor: Colors.black.withOpacity(0.5),
+                //         shape: const RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.only(
+                //             topLeft: Radius.circular(40),
+                //             topRight: Radius.circular(40),
+                //           ),
+                //         ),
+                //       );
+                //     },
+                //     icon: const Icon(Icons.edit),
+                //   ),
+                //   title: Text(snapshot.data![index]['titulo']),
+                //   subtitle: Text(
+                //     snapshot.data![index]['mensagem'],
+                //   ),
+                //   trailing: IconButton(
+                //     onPressed: () {
+                //       deleteReminders(
+                //         snapshot.data![index]['id'].toString(),
+                //       );
+                //     },
+                //     icon: const Icon(Icons.delete),
+                //   ),
+                // );
               },
             );
           } else if (snapshot.hasError) {}

@@ -1,7 +1,7 @@
 class Reminder {
   String titulo;
   String legenda;
-  DateTime dataVencimento;
+  String dataVencimento;
   int prioridade;
   Reminder({
     required this.titulo,
