@@ -1,11 +1,11 @@
 import 'dart:convert';
 
+import 'package:cuco_reminders/resources/utils/app_routes_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
-  static const _url =
-      'https://61d1-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/';
+  static const _url = '${BaseUrl.baseDaUrl}/';
   Future<void> signup(String fullName, String password) async {
     final response = await http.post(
       Uri.parse(_url),
@@ -14,6 +14,8 @@ class Auth with ChangeNotifier {
         'password': password,
       }),
     );
-    debugPrint(jsonDecode(response.body));
+    debugPrint(
+      jsonDecode(response.body),
+    );
   }
 }

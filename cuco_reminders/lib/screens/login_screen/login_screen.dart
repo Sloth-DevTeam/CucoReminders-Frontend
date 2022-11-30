@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cuco_reminders/resources/utils/app_routes_utils.dart';
 import 'package:cuco_reminders/screens/home_screen/home_screen.dart';
 import 'package:cuco_reminders/screens/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -237,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print('Logando');
     var url = Uri.parse(
-      'https://61d1-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/oauth/token',
+      '${BaseUrl.baseDaUrl}/oauth/token',
     );
     var response = await http.post(
       url,

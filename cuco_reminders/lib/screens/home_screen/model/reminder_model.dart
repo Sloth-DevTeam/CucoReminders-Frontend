@@ -1,13 +1,15 @@
 class Reminder {
-  // int id;
   String titulo;
   String legenda;
-  DateTime dataVencimento;
+  String dataVencimento;
 
+  int prioridade;
+  int id;
   Reminder({
-    // required this.id,
     required this.titulo,
     required this.legenda,
     required this.dataVencimento,
+    required this.prioridade,
+    required this.id,
   });
 }
