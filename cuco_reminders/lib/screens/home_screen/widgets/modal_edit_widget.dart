@@ -1,7 +1,38 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class ModalEditWidget extends StatelessWidget {
-  const ModalEditWidget({Key? key}) : super(key: key);
+import 'package:cuco_reminders/resources/utils/app_routes_utils.dart';
+import 'package:cuco_reminders/screens/home_screen/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import '../model/reminder_model.dart';
+
+class ModalEditWidget extends StatefulWidget {
+  final Reminder reminder;
+  const ModalEditWidget({Key? key, required this.reminder}) : super(key: key);
+
+  @override
+  State<ModalEditWidget> createState() => _ModalEditWidgetState();
+}
+
+class _ModalEditWidgetState extends State<ModalEditWidget> {
+  var prioridade = 1;
+
+  TextEditingController controleTitulo = TextEditingController();
+
+  TextEditingController controleDescricao = TextEditingController();
+
+  TextEditingController controleDataVencimento = TextEditingController();
+
+  @override
+  void initState() {
+    prioridade = widget.reminder.prioridade;
+    controleTitulo.text = widget.reminder.titulo;
+    controleDescricao.text = widget.reminder.legenda;
+    controleDataVencimento.text = widget.reminder.dataVencimento;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +59,7 @@ class ModalEditWidget extends StatelessWidget {
           const Expanded(
             flex: 1,
             child: Text(
-              'Adicionar Reminder',
+              'Editar Reminder',
               style: TextStyle(
                 color: Color(0xff194429),
                 fontSize: 22,
@@ -42,7 +73,7 @@ class ModalEditWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextFormField(
-                  // controller: controleTitulo,
+                  controller: controleTitulo,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.notifications),
                     isDense: true,
@@ -75,33 +106,44 @@ class ModalEditWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(60),
                   ),
                   child: DropdownButton(
+                    isExpanded: true,
+                    value: prioridade,
+                    hint: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(' Selecione Prioridade'),
+                    ),
                     items: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((int value) {
-                      return DropdownMenuItem<String>(
-                        value: value.toString(),
+                      return DropdownMenuItem<int>(
+                        value: value,
                         child: Text(value.toString()),
                       );
                     }).toList(),
-                    onChanged: (_) {},
+                    onChanged: (value) {
+                      setState(() {
+                        prioridade = value!;
+                      });
+                    },
                   ),
                 ),
                 // Data de entrega
                 TextFormField(
+                  controller: controleDescricao,
+                  maxLines: 3,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.calendar_month),
                     isDense: true,
                     contentPadding: const EdgeInsets.all(22),
-                    hintText: 'Data de Inicio',
+                    hintText: 'Descrição',
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
-                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                 ),
@@ -112,7 +154,26 @@ class ModalEditWidget extends StatelessWidget {
             height: 20,
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                editarReminders(
+                  widget.reminder.id,
+                  controleTitulo.text,
+                  controleDescricao.text,
+                  widget.reminder.dataVencimento,
+                  prioridade,
+                );
+                Navigator.pop(
+                  context,
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
+              });
+            },
             child: Container(
               decoration: BoxDecoration(
                 boxShadow: [
@@ -140,7 +201,7 @@ class ModalEditWidget extends StatelessWidget {
               height: 70,
               child: const Center(
                 child: Text(
-                  'Adicionar',
+                  'Editar',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -154,4 +215,34 @@ class ModalEditWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+editarReminders(
+  id,
+  titulo,
+  mensagem,
+  dataVencimento,
+  prioridade,
+) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  var url =
+      Uri.parse('${BaseUrl.baseDaUrl}/cucoreminder/lembretes/atualizar/$id');
+  var response = await http.put(url,
+      headers: {
+        'Authorization': sharedPreferences.getString('Authorization')!,
+        "Content-type": "application/json"
+      },
+      body: jsonEncode({
+        'titulo': titulo,
+        'mensagem': mensagem,
+        'dataVencimento': dataVencimento,
+        'prioridade': prioridade.toString(),
+      }));
+
+  print(
+    response.body.toString(),
+  );
+  print('ai brunao se liga : $titulo, $mensagem, $prioridade,');
+  print(response.statusCode);
 }

@@ -12,11 +12,13 @@ class RemindersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isHighPriority = reminder.prioridade > 5;
+
     return GestureDetector(
       onDoubleTap: () {
         showModalBottomSheet(
           context: context,
-          builder: (context) => const ModalEditWidget(),
+          builder: (context) => ModalEditWidget(reminder: reminder),
           barrierColor: Colors.black.withOpacity(0.5),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -33,13 +35,18 @@ class RemindersWidget extends StatelessWidget {
           height: 125,
           width: 500,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.topRight,
-              colors: <Color>[
-                Color(0xffE38929),
-                Color(0xffFFAB00),
-              ],
+              colors: isHighPriority
+                  ? [
+                      const Color(0xffE38929),
+                      const Color(0xffFFAB00),
+                    ]
+                  : [
+                      const Color(0xff1E6AFF),
+                      const Color(0xff6E3AFF),
+                    ],
             ),
             borderRadius: BorderRadius.circular(30),
           ),
@@ -66,7 +73,7 @@ class RemindersWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: const [
                   Text(
-                    'Faltam 5 dias',
+                    'Faltam ',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

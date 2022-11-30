@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cuco_reminders/resources/utils/app_routes_utils.dart';
 import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/reminders_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final controleTitulo = TextEditingController();
   final controleDescricao = TextEditingController();
-
-  final _editarTitulo = TextEditingController();
-  final _editarDescricao = TextEditingController();
 
   @override
   void initState() {
@@ -159,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       legenda: snapshot.data![index]['mensagem'],
                       dataVencimento: snapshot.data![index]['dataVencimento'],
                       prioridade: snapshot.data![index]['prioridade'],
+                      id: snapshot.data![index]['id'],
                     ),
                   ),
                   child: RemindersWidget(
@@ -167,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       legenda: snapshot.data![index]['mensagem'],
                       dataVencimento: snapshot.data![index]['dataVencimento'],
                       prioridade: snapshot.data![index]['prioridade'],
+                      id: snapshot.data![index]['id'],
                     ),
                   ),
                 );
@@ -185,8 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
 Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  var url = Uri.parse(
-      'https://58a5-2804-7f7-a58a-4d7d-94e8-ffb9-1eb-79f6.sa.ngrok.io/cucoreminder/lembretes');
+  var url = Uri.parse('${BaseUrl.baseDaUrl}/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -203,8 +202,8 @@ Future<List> fetchReminders() async {
 deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  var url = Uri.parse(
-      'https://58a5-2804-7f7-a58a-4d7d-94e8-ffb9-1eb-79f6.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+  var url =
+      Uri.parse('${BaseUrl.baseDaUrl}/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
