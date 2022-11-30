@@ -166,6 +166,7 @@ class _ModalEditWidgetState extends State<ModalEditWidget> {
                 Navigator.pop(
                   context,
                 );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

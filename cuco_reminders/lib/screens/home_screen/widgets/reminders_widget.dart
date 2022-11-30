@@ -14,6 +14,12 @@ class RemindersWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isHighPriority = reminder.prioridade > 5;
 
+    var dataCompleta =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(reminder.dataVencimento));
+    String diferenca = '${dataCompleta.difference(DateTime.now()).inDays}';
+    bool expirou =
+        (dataCompleta.difference(DateTime.now()) < const Duration(days: 1));
+
     return GestureDetector(
       onDoubleTap: () {
         showModalBottomSheet(
@@ -38,14 +44,14 @@ class RemindersWidget extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.topRight,
-              colors: isHighPriority
+              colors: expirou && isHighPriority
                   ? [
-                      const Color(0xffE38929),
-                      const Color(0xffFFAB00),
+                      const Color(0xffFF391E),
+                      const Color(0xffD51C03),
                     ]
                   : [
-                      const Color(0xff1E6AFF),
-                      const Color(0xff6E3AFF),
+                      const Color(0xffC45F0B),
+                      const Color(0xffF8BC28),
                     ],
             ),
             borderRadius: BorderRadius.circular(30),
@@ -71,10 +77,14 @@ class RemindersWidget extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children: [
                   Text(
-                    'Faltam ',
-                    style: TextStyle(
+                    int.parse(diferenca) == 0
+                        ? 'Hoje'
+                        : int.parse(diferenca) < 0
+                            ? 'Expirou'
+                            : 'Faltam $diferenca dias',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

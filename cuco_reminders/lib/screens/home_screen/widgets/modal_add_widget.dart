@@ -230,7 +230,7 @@ adicionarReminders(
 
   var date = DateTime.now();
 
-  date.add(Duration(days: dataVencimento));
+  date = date.add(Duration(days: dataVencimento));
 
   var url = Uri.parse('${BaseUrl.baseDaUrl}/cucoreminder/lembretes/salvar');
   var response = await http.post(url,

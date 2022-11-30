@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cuco_reminders/resources/utils/app_routes_utils.dart';
 import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/reminders_widget.dart';
+import 'package:cuco_reminders/screens/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     reminders = fetchReminders();
   }
 
@@ -93,8 +95,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ));
+            },
+            icon: const Icon(Icons.exit_to_app),
           )
         ],
       ),
@@ -155,7 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Reminder(
                       titulo: snapshot.data![index]['titulo'],
                       legenda: snapshot.data![index]['mensagem'],
-                      dataVencimento: snapshot.data![index]['dataVencimento'],
+                      dataVencimento:
+                          snapshot.data![index]['dataVencimento'].toString(),
                       prioridade: snapshot.data![index]['prioridade'],
                       id: snapshot.data![index]['id'],
                     ),
@@ -164,7 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     reminder: Reminder(
                       titulo: snapshot.data![index]['titulo'],
                       legenda: snapshot.data![index]['mensagem'],
-                      dataVencimento: snapshot.data![index]['dataVencimento'],
+                      dataVencimento:
+                          snapshot.data![index]['dataVencimento'].toString(),
                       prioridade: snapshot.data![index]['prioridade'],
                       id: snapshot.data![index]['id'],
                     ),
