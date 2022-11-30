@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:cuco_reminders/screens/home_screen/model/reminder_model.dart';
-import 'package:cuco_reminders/screens/home_screen/widgets/modal_add_widget.dart';
 import 'package:cuco_reminders/screens/home_screen/widgets/reminders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import 'widgets/modal_add_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List> reminders;
   final _formKey = GlobalKey<FormState>();
 
-  final _adicionarTitulo = TextEditingController();
-  final _adicionarDescricao = TextEditingController();
+  final controleTitulo = TextEditingController();
+  final controleDescricao = TextEditingController();
 
   final _editarTitulo = TextEditingController();
   final _editarDescricao = TextEditingController();
@@ -123,12 +124,51 @@ class _HomeScreenState extends State<HomeScreen> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return RemindersWidget(
-                  reminder: Reminder(
+                return Dismissible(
+                  background: Container(
+                    color: Colors.green,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.check, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: const [
+                          Icon(Icons.delete, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ),
+                  onDismissed: (DismissDirection direction) {
+                    deleteReminders(
+                      snapshot.data![index]['id'].toString(),
+                    );
+                  },
+                  key: ObjectKey(
+                    Reminder(
                       titulo: snapshot.data![index]['titulo'],
                       legenda: snapshot.data![index]['mensagem'],
                       dataVencimento: snapshot.data![index]['dataVencimento'],
-                      prioridade: snapshot.data![index]['prioridade']),
+                      prioridade: snapshot.data![index]['prioridade'],
+                    ),
+                  ),
+                  child: RemindersWidget(
+                    reminder: Reminder(
+                      titulo: snapshot.data![index]['titulo'],
+                      legenda: snapshot.data![index]['mensagem'],
+                      dataVencimento: snapshot.data![index]['dataVencimento'],
+                      prioridade: snapshot.data![index]['prioridade'],
+                    ),
+                  ),
                 );
               },
             );
@@ -146,7 +186,7 @@ Future<List> fetchReminders() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes');
+      'https://58a5-2804-7f7-a58a-4d7d-94e8-ffb9-1eb-79f6.sa.ngrok.io/cucoreminder/lembretes');
   var response = await http.get(
     url,
     headers: {
@@ -164,32 +204,13 @@ deleteReminders(String id) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   var url = Uri.parse(
-      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
+      'https://58a5-2804-7f7-a58a-4d7d-94e8-ffb9-1eb-79f6.sa.ngrok.io/cucoreminder/lembretes/deletar/$id');
   var response = await http.delete(
     url,
     headers: {
       'Authorization': sharedPreferences.getString('Authorization')!,
     },
   );
-  print(
-    response.body.toString(),
-  );
-  print(response.statusCode);
-}
-
-adicionarReminders() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  var url = Uri.parse(
-      'https://b255-2804-7f7-a58a-4d7d-15f9-d08d-4a0d-f07f.sa.ngrok.io/cucoreminder/lembretes/salvar');
-  var response = await http.delete(url, headers: {
-    'Authorization': sharedPreferences.getString('Authorization')!,
-  }, body: {
-    'titulo': '(String) titulo',
-    'mensagem': '(String) msg',
-    'dataVencimento':
-        ' (String) dataVencimento [dia+"/"+mes+"/"+ano+" "+hora+":"+minuto+":"+segundo;]',
-  });
   print(
     response.body.toString(),
   );

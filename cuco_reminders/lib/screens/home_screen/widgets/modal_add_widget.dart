@@ -1,7 +1,24 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class ModalAddWidget extends StatelessWidget {
-  const ModalAddWidget({Key? key}) : super(key: key);
+import 'package:cuco_reminders/screens/home_screen/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+class ModalAddWidget extends StatefulWidget {
+  const ModalAddWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ModalAddWidget> createState() => _ModalAddWidgetState();
+}
+
+class _ModalAddWidgetState extends State<ModalAddWidget> {
+  var prioridade = 1;
+  TextEditingController controleTitulo = TextEditingController();
+  TextEditingController controleDescricao = TextEditingController();
+  TextEditingController controleDataVencimento = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +59,7 @@ class ModalAddWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextFormField(
-                  // controller: controleTitulo,
+                  controller: controleTitulo,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.notifications),
                     isDense: true,
@@ -75,83 +92,49 @@ class ModalAddWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(60),
                   ),
                   child: DropdownButton(
+                    isExpanded: true,
+                    value: prioridade,
                     hint: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(10.0),
                       child: Text(' Selecione Prioridade'),
                     ),
                     items: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((int value) {
-                      return DropdownMenuItem<String>(
-                        value: value.toString(),
+                      return DropdownMenuItem<int>(
+                        value: value,
                         child: Text(value.toString()),
                       );
                     }).toList(),
-                    onChanged: (_) {},
+                    onChanged: (value) {
+                      setState(() {
+                        prioridade = value!;
+                      });
+                    },
                   ),
                 ),
                 // Data de entrega
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 60,
-                      width: 150,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(60),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black54,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'dd/mm/yy',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                TextFormField(
+                  controller: controleDataVencimento,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.all(22),
+                    hintText: 'Dias até o vencimento',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    Container(
-                      height: 60,
-                      width: 150,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(60),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black54,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'hh:mm',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                  ],
+                  ),
                 ),
                 TextFormField(
-                  // controller: controleDescricao,
+                  controller: controleDescricao,
                   maxLines: 3,
                   decoration: InputDecoration(
                     isDense: true,
@@ -160,13 +143,13 @@ class ModalAddWidget extends StatelessWidget {
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          width: 3, color: Colors.white), //<-- SEE HERE
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.white),
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
@@ -178,7 +161,21 @@ class ModalAddWidget extends StatelessWidget {
             height: 20,
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                adicionarReminders(controleTitulo.text, controleDescricao.text,
+                    int.parse(controleDataVencimento.text), prioridade);
+                Navigator.pop(
+                  context,
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
+              });
+            },
             child: Container(
               decoration: BoxDecoration(
                 boxShadow: [
@@ -220,4 +217,39 @@ class ModalAddWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+adicionarReminders(
+  titulo,
+  mensagem,
+  dataVencimento,
+  prioridade,
+) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  var date = DateTime.now();
+
+  date.add(Duration(days: dataVencimento));
+
+  var url = Uri.parse(
+      'https://58a5-2804-7f7-a58a-4d7d-94e8-ffb9-1eb-79f6.sa.ngrok.io/cucoreminder/lembretes/salvar');
+  var response = await http.post(url,
+      headers: {
+        'Authorization': sharedPreferences.getString('Authorization')!,
+        "Content-type": "application/json"
+      },
+      body: jsonEncode({
+        'titulo': titulo,
+        'mensagem': mensagem,
+        'dataVencimento':
+            "${date.day > 9 ? date.day : ("0${date.day}")}/${date.month > 9 ? date.month : ("0${date.month}")}/${date.year > 9 ? date.year : ("0${date.year}")} ${date.hour > 9 ? date.hour : ("0${date.hour}")}:${date.minute > 9 ? date.minute : ("0${date.minute}")}:${date.second > 9 ? date.second : ("0${date.second}")}",
+        'prioridade': prioridade.toString(),
+      }));
+  print(
+      "${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}:${date.second}");
+  print(
+    response.body.toString(),
+  );
+  print('ai brunao se liga : $titulo, $mensagem, $prioridade,');
+  print(response.statusCode);
 }

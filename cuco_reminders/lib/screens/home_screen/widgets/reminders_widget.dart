@@ -26,82 +26,55 @@ class RemindersWidget extends StatelessWidget {
           ),
         );
       },
-      child: Dismissible(
-        background: Container(
-          color: Colors.green,
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              children: const [
-                Icon(Icons.check, color: Colors.white),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          height: 125,
+          width: 500,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.topRight,
+              colors: <Color>[
+                Color(0xffE38929),
+                Color(0xffFFAB00),
               ],
             ),
+            borderRadius: BorderRadius.circular(30),
           ),
-        ),
-        secondaryBackground: Container(
-          color: Colors.red,
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Icon(Icons.delete, color: Colors.white),
-              ],
-            ),
-          ),
-        ),
-        onDismissed: (DismissDirection direction) {},
-        key: ObjectKey(reminder),
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            height: 125,
-            width: 500,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: <Color>[
-                  Color(0xffE38929),
-                  Color(0xffFFAB00),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                reminder.titulo,
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              ),
+              Text(
+                reminder.legenda,
+                style: const TextStyle(fontSize: 14, color: Colors.white),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Text(
+                    'Faltam 5 dias',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  reminder.titulo,
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white),
-                ),
-                Text(
-                  reminder.legenda,
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Text(
-                      'Faltam 5 dias',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
