@@ -1,4 +1,4 @@
-import 'package:cuco_reminders/screens/login_screen/login_screen.dart';
+import 'package:cuco_reminders/screens/init_screen/splash_screen.dart';
 
 import 'package:cuco_reminders/screens/register_screen/auth/auth_register.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class CucoApp extends StatelessWidget {
         builder: (context, snapshot) {
           return const MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: LoginScreen(),
+            home: SplashScreen(),
           );
         });
   }

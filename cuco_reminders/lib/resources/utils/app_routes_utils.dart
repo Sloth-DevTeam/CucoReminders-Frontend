@@ -1,4 +1,4 @@
 class BaseUrl {
   static const baseDaUrl =
-      'https://373c-2804-7f7-a58a-4d7d-8da3-b71f-4427-9849.sa.ngrok.io';
+      'https://aeb7-2804-7f7-a58a-4d7d-c540-e5dd-1a87-29e8.sa.ngrok.io';
 }
